@@ -17,17 +17,12 @@
 #include "keychron_common.h"
 #include "sync_timer.h"
 
-bool is_siri_active = false;
-uint32_t siri_timer = 0;
+bool     is_siri_active = false;
+uint32_t siri_timer     = 0;
 
-key_combination_t key_comb_list[4] = {
-    {2, {KC_LWIN, KC_TAB}},
-    {2, {KC_LWIN, KC_E}},
-    {3, {KC_LSFT, KC_LCMD, KC_4}},
-    {2, {KC_LWIN, KC_C}}
-};
+key_combination_t key_comb_list[4] = {{2, {KC_LWIN, KC_TAB}}, {2, {KC_LWIN, KC_E}}, {3, {KC_LSFT, KC_LCMD, KC_4}}, {2, {KC_LWIN, KC_C}}};
 
-static uint8_t mac_keycode[4] = { KC_LOPT, KC_ROPT, KC_LCMD, KC_RCMD };
+static uint8_t mac_keycode[4] = {KC_LOPT, KC_ROPT, KC_LCMD, KC_RCMD};
 
 void housekeeping_task_keychron(void) {
     if (is_siri_active) {
@@ -49,114 +44,113 @@ bool d_pressed = false;
 bool w_pressed = false;
 bool s_pressed = false;
 
-
 bool process_record_keychron(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
-        case KC_A:
-            if (record->event.pressed) {
-                a_stopped = false;
-                a_pressed = true;
-
-                unregister_code(KC_D);
-
-                if (!d_stopped) {
-                    d_stopped = true;
-                }
-
-                register_code(KC_A);
-            } else {
-               if (d_pressed && d_stopped) {
-                    register_code(KC_D);
-               }
-
-               a_pressed = false;
-               d_stopped = false;
-
-               unregister_code(KC_A);
-            }
-            return false;
-        case KC_D:
-            if (record->event.pressed) {
-                d_stopped = false;
-                d_pressed = true;
-
-                unregister_code(KC_A);
-
-                if (!a_stopped) {
-                    a_stopped = true;
-                }
-
-                register_code(KC_D);
-            } else {
-                if (a_pressed && a_stopped) {
-                    register_code(KC_A);
-                }
-
-                d_pressed = false;
-                a_stopped = false;
-
-                unregister_code(KC_D);
-            }
-            return false;
-        case KC_W:
-            if (record->event.pressed) {
-                w_stopped = false;
-                w_pressed = true;
-
-                unregister_code(KC_S);
-
-                if (!s_stopped) {
-                    s_stopped = true;
-                }
-
-                register_code(KC_W);
-            } else {
-                if (s_pressed && s_stopped) {
-                    register_code(KC_S);
-                }
-                w_pressed = false;
-                s_stopped = false;
-
-                unregister_code(KC_W);
-            }
-            return false;
-        case KC_S:
-            if (record->event.pressed) {
-                s_stopped = false;
-                s_pressed = true;
-
-                unregister_code(KC_W);
-
-                if (!w_stopped) {
-                    w_stopped = true;
-                }
-
-                register_code(KC_S);
-            } else {
-                if (w_pressed && w_stopped) {
-                    register_code(KC_W);
-                }
-
-                s_pressed = false;
-                w_stopped = false;
-
-                unregister_code(KC_S);
-            }
-            return false;
+        // case KC_A:
+        //     if (record->event.pressed) {
+        //         a_stopped = false;
+        //         a_pressed = true;
+        //
+        //         unregister_code(KC_D);
+        //
+        //         if (!d_stopped) {
+        //             d_stopped = true;
+        //         }
+        //
+        //         register_code(KC_A);
+        //     } else {
+        //        if (d_pressed && d_stopped) {
+        //             register_code(KC_D);
+        //        }
+        //
+        //        a_pressed = false;
+        //        d_stopped = false;
+        //
+        //        unregister_code(KC_A);
+        //     }
+        //     return false;
+        // case KC_D:
+        //     if (record->event.pressed) {
+        //         d_stopped = false;
+        //         d_pressed = true;
+        //
+        //         unregister_code(KC_A);
+        //
+        //         if (!a_stopped) {
+        //             a_stopped = true;
+        //         }
+        //
+        //         register_code(KC_D);
+        //     } else {
+        //         if (a_pressed && a_stopped) {
+        //             register_code(KC_A);
+        //         }
+        //
+        //         d_pressed = false;
+        //         a_stopped = false;
+        //
+        //         unregister_code(KC_D);
+        //     }
+        //     return false;
+        // case KC_W:
+        //     if (record->event.pressed) {
+        //         w_stopped = false;
+        //         w_pressed = true;
+        //
+        //         unregister_code(KC_S);
+        //
+        //         if (!s_stopped) {
+        //             s_stopped = true;
+        //         }
+        //
+        //         register_code(KC_W);
+        //     } else {
+        //         if (s_pressed && s_stopped) {
+        //             register_code(KC_S);
+        //         }
+        //         w_pressed = false;
+        //         s_stopped = false;
+        //
+        //         unregister_code(KC_W);
+        //     }
+        //     return false;
+        // case KC_S:
+        //     if (record->event.pressed) {
+        //         s_stopped = false;
+        //         s_pressed = true;
+        //
+        //         unregister_code(KC_W);
+        //
+        //         if (!w_stopped) {
+        //             w_stopped = true;
+        //         }
+        //
+        //         register_code(KC_S);
+        //     } else {
+        //         if (w_pressed && w_stopped) {
+        //             register_code(KC_W);
+        //         }
+        //
+        //         s_pressed = false;
+        //         w_stopped = false;
+        //
+        //         unregister_code(KC_S);
+        //     }
+        //     return false;
         case QK_KB_0:
             if (record->event.pressed) {
                 register_code(KC_MISSION_CONTROL);
             } else {
                 unregister_code(KC_MISSION_CONTROL);
             }
-            return false;  // Skip all further processing of this key
+            return false; // Skip all further processing of this key
         case QK_KB_1:
             if (record->event.pressed) {
                 register_code(KC_LAUNCHPAD);
             } else {
                 unregister_code(KC_LAUNCHPAD);
             }
-            return false;  // Skip all further processing of this key
+            return false; // Skip all further processing of this key
         case KC_LOPTN:
         case KC_ROPTN:
         case KC_LCMMD:
@@ -166,7 +160,7 @@ bool process_record_keychron(uint16_t keycode, keyrecord_t *record) {
             } else {
                 unregister_code(mac_keycode[keycode - KC_LOPTN]);
             }
-            return false;  // Skip all further processing of this key
+            return false; // Skip all further processing of this key
         case KC_SIRI:
             if (record->event.pressed) {
                 if (!is_siri_active) {
@@ -178,7 +172,7 @@ bool process_record_keychron(uint16_t keycode, keyrecord_t *record) {
             } else {
                 // Do something else when release
             }
-            return false;  // Skip all further processing of this key
+            return false; // Skip all further processing of this key
         case KC_TASK:
         case KC_FLXP:
         case KC_SNAP:
@@ -192,8 +186,8 @@ bool process_record_keychron(uint16_t keycode, keyrecord_t *record) {
                     unregister_code(key_comb_list[keycode - KC_TASK].keycode[i]);
                 }
             }
-            return false;  // Skip all further processing of this key
+            return false; // Skip all further processing of this key
         default:
-            return true;  // Process all other keycodes normally
+            return true; // Process all other keycodes normally
     }
 }

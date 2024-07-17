@@ -15,6 +15,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include <limits.h>
+#include <stdint.h>
 
 #include "host.h"
 #include "keycode.h"
@@ -927,6 +928,28 @@ __attribute__((weak)) void register_code(uint8_t code) {
             del_key(code);
             send_keyboard_report();
         }
+        if (code == KC_A) {
+            if (is_key_pressed(KC_D)) {
+                del_key(KC_D);
+                send_keyboard_report();
+            }
+        } else if (code == KC_D) {
+            if (is_key_pressed(KC_A)) {
+                del_key(KC_A);
+                send_keyboard_report();
+            }
+        } else if (code == KC_W) {
+            if (is_key_pressed(KC_S)) {
+                del_key(KC_S);
+                send_keyboard_report();
+            }
+        } else if (code == KC_S) {
+            if (is_key_pressed(KC_W)) {
+                del_key(KC_W);
+                send_keyboard_report();
+            }
+        }
+
         add_key(code);
         send_keyboard_report();
     } else if (IS_MODIFIER_KEYCODE(code)) {
