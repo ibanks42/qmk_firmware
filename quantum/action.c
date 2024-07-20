@@ -928,30 +928,10 @@ __attribute__((weak)) void register_code(uint8_t code) {
             del_key(code);
             send_keyboard_report();
         }
-        if (code == KC_A) {
-            if (is_key_pressed(KC_D)) {
-                del_key(KC_D);
-                send_keyboard_report();
-            }
-        } else if (code == KC_D) {
-            if (is_key_pressed(KC_A)) {
-                del_key(KC_A);
-                send_keyboard_report();
-            }
-        } else if (code == KC_W) {
-            if (is_key_pressed(KC_S)) {
-                del_key(KC_S);
-                send_keyboard_report();
-            }
-        } else if (code == KC_S) {
-            if (is_key_pressed(KC_W)) {
-                del_key(KC_W);
-                send_keyboard_report();
-            }
+        if (!snap_tap(code, true)) {
+            add_key(code);
+            send_keyboard_report();
         }
-
-        add_key(code);
-        send_keyboard_report();
     } else if (IS_MODIFIER_KEYCODE(code)) {
         add_mods(MOD_BIT(code));
         send_keyboard_report();
@@ -966,6 +946,140 @@ __attribute__((weak)) void register_code(uint8_t code) {
     } else if (IS_MOUSE_KEYCODE(code)) {
         register_mouse(code, true);
     }
+}
+
+bool a_pressed = false;
+bool d_pressed = false;
+bool w_pressed = false;
+bool s_pressed = false;
+
+bool a_stopped = false;
+bool d_stopped = false;
+bool w_stopped = false;
+bool s_stopped = false;
+
+/** \brief Process 'SnapTap'. (FIXME: Needs better description)
+ *
+ */
+__attribute__((weak)) bool snap_tap(uint8_t code, bool pressed) {
+    switch (code) {
+        case KC_A:
+            if (pressed) {
+                //     if (a_pressed) {
+                //         a_stopped = true;
+                //         return true;
+                //     }
+                //     a_pressed = true;
+                // }
+                a_stopped = false;
+                a_pressed = true;
+
+                del_key(KC_D);
+                send_keyboard_report();
+
+                if (!d_stopped) {
+                    d_stopped = true;
+                }
+
+                add_key(code);
+                send_keyboard_report();
+            } else {
+                if (d_pressed && d_stopped) {
+                    add_key(KC_D);
+                    send_keyboard_report();
+                }
+
+                a_pressed = false;
+                d_stopped = false;
+
+                del_key(code);
+                send_keyboard_report();
+            }
+            return true;
+        case KC_D:
+            if (pressed) {
+                d_stopped = false;
+                d_pressed = true;
+
+                del_key(KC_A);
+                send_keyboard_report();
+
+                if (!a_stopped) {
+                    a_stopped = true;
+                }
+
+                add_key(code);
+                send_keyboard_report();
+            } else {
+                if (a_pressed && a_stopped) {
+                    add_key(KC_A);
+                    send_keyboard_report();
+                }
+
+                d_pressed = false;
+                a_stopped = false;
+
+                del_key(code);
+                send_keyboard_report();
+            }
+            return true;
+        case KC_W:
+            if (pressed) {
+                w_stopped = false;
+                w_pressed = true;
+
+                del_key(KC_W);
+                send_keyboard_report();
+
+                if (!s_stopped) {
+                    s_stopped = true;
+                }
+
+                add_key(code);
+                send_keyboard_report();
+            } else {
+                if (s_pressed && s_stopped) {
+                    add_key(KC_S);
+                    send_keyboard_report();
+                }
+                w_pressed = false;
+                s_stopped = false;
+
+                del_key(code);
+                send_keyboard_report();
+            }
+
+            return true;
+        case KC_S:
+            if (pressed) {
+                s_stopped = false;
+                s_pressed = true;
+
+                del_key(KC_W);
+                send_keyboard_report();
+
+                if (!w_stopped) {
+                    w_stopped = true;
+                }
+
+                add_key(code);
+                send_keyboard_report();
+            } else {
+                if (w_pressed && w_stopped) {
+                    add_key(KC_W);
+                    send_keyboard_report();
+                }
+
+                s_pressed = false;
+                w_stopped = false;
+
+                del_key(code);
+                send_keyboard_report();
+            }
+
+            return true;
+    }
+    return false;
 }
 
 /** \brief Utilities for actions. (FIXME: Needs better description)
@@ -1007,8 +1121,10 @@ __attribute__((weak)) void unregister_code(uint8_t code) {
 #endif
 
     } else if (IS_BASIC_KEYCODE(code)) {
-        del_key(code);
-        send_keyboard_report();
+        if (!snap_tap(code, false)) {
+            del_key(code);
+            send_keyboard_report();
+        }
     } else if (IS_MODIFIER_KEYCODE(code)) {
         del_mods(MOD_BIT(code));
         send_keyboard_report();

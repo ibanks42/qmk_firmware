@@ -34,16 +34,6 @@ void housekeeping_task_keychron(void) {
     }
 }
 
-bool a_stopped = false;
-bool d_stopped = false;
-bool w_stopped = false;
-bool s_stopped = false;
-
-bool a_pressed = false;
-bool d_pressed = false;
-bool w_pressed = false;
-bool s_pressed = false;
-
 bool process_record_keychron(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
         // case KC_A:
